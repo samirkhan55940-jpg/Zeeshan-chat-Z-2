@@ -1,0 +1,36 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="> ACCESS_RESTRICTED: ZEESHAN_Z2_SYSTEM"
+        android:textColor="#00FF00"
+        android:fontFamily="monospace" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="> INITIALIZING 10,000GB DATA BRIDGE..."
+        android:textColor="#00FF00"
+        android:layout_marginTop="10dp"
+        android:fontFamily="monospace" />
+
+    <EditText
+        android:id="@+id/secret_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ENTER_COMMAND_CODE"
+        android:textColorHint="#333333"
+        android:textColor="#00FF00"
+        android:background="#111111"
+        android:layout_marginTop="50dp"
+        android:fontFamily="monospace"
+        android:padding="15dp" />
+
+</LinearLayout>
+
