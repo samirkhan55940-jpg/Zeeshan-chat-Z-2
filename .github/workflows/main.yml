@@ -1,4 +1,4 @@
-name: Zeeshan-chat-Z2-Final-Fix
+name: Zeeshan-chat-Z2-Final-Master-Build
 
 on:
   push:
@@ -8,21 +8,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Code ko uthana
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Java Setup (Z+2 Engine)
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Android Structure Setup
+      - name: Create Complete Project Structure
         run: |
+          # Folders banana
           mkdir -p app/src/main/java/com/zeeshan/chat
           mkdir -p app/src/main/res/layout
-          
-          # Root build.gradle (Fixing Dependency Error)
+          mkdir -p app/src/main/res/values
+
+          # 1. Root build.gradle (Stable version)
           cat <<EOF > build.gradle
           buildscript {
               repositories { google(); mavenCentral() }
@@ -33,10 +35,10 @@ jobs:
           }
           EOF
 
-          # settings.gradle
+          # 2. settings.gradle
           echo "include ':app'" > settings.gradle
 
-          # app/build.gradle (Standard Syntax)
+          # 3. app/build.gradle (Corrected Syntax for 2026)
           cat <<EOF > app/build.gradle
           apply plugin: 'com.android.application'
           android {
@@ -47,18 +49,18 @@ jobs:
                   minSdk 24
                   targetSdk 33
                   versionCode 1
-                  versionName "1.0-Z2"
+                  versionName "1.0-Z2-Final"
               }
           }
           EOF
 
-          # Manifest Setup
+          # 4. Manifest (App Settings)
           cat <<EOF > app/src/main/AndroidManifest.xml
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
               <application
                   android:label="Zeeshan Chat Z+2"
-                  android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+                  android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
                   <activity android:name=".MainActivity" android:exported="true">
                       <intent-filter>
                           <action android:name="android.intent.action.MAIN" />
@@ -69,14 +71,50 @@ jobs:
           </manifest>
           EOF
 
-      - name: Build Real APK
+          # 5. NASA Style Layout (activity_main.xml)
+          cat <<EOF > app/src/main/res/layout/activity_main.xml
+          <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#000000">
+              <TextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="ZEESHAN Z+2 ACTIVE"
+                  android:textColor="#00FF00"
+                  android:layout_centerInParent="true"
+                  android:textSize="24sp"
+                  android:fontFamily="monospace" />
+          </RelativeLayout>
+          EOF
+
+          # 6. MainActivity.java (Logic Engine)
+          cat <<EOF > app/src/main/java/com/zeeshan/chat/MainActivity.java
+          package com.zeeshan.chat;
+          import android.os.Bundle;
+          import androidx.appcompat.app.AppCompatActivity;
+
+          public class MainActivity extends AppCompatActivity {
+              @Override
+              protected void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  setContentView(R.layout.activity_main);
+                  // Tukre System loading logic yahan se shuru hoga
+              }
+          }
+          EOF
+
+          # 7. Strings fix
+          echo '<resources><string name="app_name">Zeeshan Chat Z+2</string></resources>' > app/src/main/res/values/strings.xml
+
+      - name: Build APK with Gradle Wrapper
         run: |
           gradle wrapper --gradle-version 8.1
           chmod +x ./gradlew
           ./gradlew assembleDebug
 
-      - name: Upload Asli Zeeshan chat Z+2
+      - name: Upload Final APK
         uses: actions/upload-artifact@v4
         with:
-          name: Zeeshan-chat-Z2-Final-APK
+          name: Zeeshan-Chat-Z2-Final-APK
           path: app/build/outputs/apk/debug/app-debug.apk
