@@ -1,35 +1,31 @@
 name: Zeeshan chat Z+2 Auto-Builder
 
-# Ye tab chalega jab aap 'main' branch mein kuch naya save karenge
 on:
   push:
     branches: [ "main" ]
 
 jobs:
   build:
-    name: Build APK offline memory ke liye
     runs-on: ubuntu-latest
-
     steps:
-      - name: Code ko uthana (Checkout)
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4 # Updated to v4
 
-      - name: Java Environment Setup karna
-        uses: actions/setup-java@v3
+      - name: Java Setup
+        uses: actions/setup-java@v4 # Updated to v4
         with:
           distribution: 'temurin'
-          java-version: '17' # Latest stable version
+          java-version: '17'
 
-      - name: Android SDK Setup (Bina Root ke chalne wale apps ke liye)
+      - name: Android SDK Setup
         uses: android-actions/setup-android@v3
 
-      - name: App ka APK Banana (Gradle Build)
+      - name: Build APK
         run: |
           chmod +x ./gradlew
           ./gradlew assembleDebug
 
-      - name: Zeeshan chat Z+2 APK Download ke liye ready karna
-        uses: actions/upload-artifact@v3
+      - name: Upload APK
+        uses: actions/upload-artifact@v4 # Yahan v3 ki jagah v4 kar diya hai
         with:
           name: Zeeshan-chat-Z+2-App
           path: app/build/outputs/apk/debug/app-debug.apk
