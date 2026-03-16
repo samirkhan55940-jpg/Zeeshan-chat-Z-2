@@ -19,11 +19,10 @@ jobs:
 
       - name: Android Structure Setup
         run: |
-          # 1. Asli folders banana
           mkdir -p app/src/main/java/com/zeeshan/chat
           mkdir -p app/src/main/res/layout
           
-          # 2. Main Build File banana (Real Build Engine)
+          # Root build.gradle
           cat <<EOF > build.gradle
           buildscript {
               repositories { google(); mavenCentral() }
@@ -34,10 +33,10 @@ jobs:
           }
           EOF
 
-          # 3. Settings file
+          # settings.gradle
           echo "include ':app'" > settings.gradle
 
-          # 4. App specific build file (NASA Z+2 Config)
+          # app/build.gradle
           cat <<EOF > app/build.gradle
           plugins { id 'com.android.application' }
           android {
@@ -53,7 +52,7 @@ jobs:
           }
           EOF
 
-          # 5. Manifest file (App ki entry ke liye)
+          # Manifest Fix
           mkdir -p app/src/main/
           cat <<EOF > app/src/main/AndroidManifest.xml
           <?xml version="1.0" encoding="utf-8"?>
@@ -71,11 +70,9 @@ jobs:
           </manifest>
           EOF
 
-      - name: Generate Gradle Wrapper
-        run: gradle wrapper
-
-      - name: Build Real APK (Assemble Debug)
+      - name: Build Real APK
         run: |
+          gradle wrapper --gradle-version 8.1
           chmod +x ./gradlew
           ./gradlew assembleDebug
 
@@ -84,4 +81,3 @@ jobs:
         with:
           name: Zeeshan-chat-Z+2-Real-APK
           path: app/build/outputs/apk/debug/app-debug.apk
-
