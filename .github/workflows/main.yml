@@ -1,4 +1,4 @@
-name: Zeeshan-chat-Z2-Builder
+name: Zeeshan-chat-Z2-Real-Builder
 
 on:
   push:
@@ -8,27 +8,80 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Code ko uthana
+        uses: actions/checkout@v4
 
-      - name: Create App Structure
+      - name: Java Setup (Z+2 Engine)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Android Structure Setup
         run: |
+          # 1. Asli folders banana
           mkdir -p app/src/main/java/com/zeeshan/chat
           mkdir -p app/src/main/res/layout
-          mkdir -p app/build/outputs/apk/debug/
-          echo "Zeeshan Chat Z+2 Engine Ready" > app/src/main/java/com/zeeshan/chat/Z2.txt
+          
+          # 2. Main Build File banana (Real Build Engine)
+          cat <<EOF > build.gradle
+          buildscript {
+              repositories { google(); mavenCentral() }
+              dependencies { classpath 'com.android.tools.build:gradle:8.1.0' }
+          }
+          allprojects {
+              repositories { google(); mavenCentral() }
+          }
+          EOF
 
-      - name: Build Z+2 APK (Bypass Mode)
+          # 3. Settings file
+          echo "include ':app'" > settings.gradle
+
+          # 4. App specific build file (NASA Z+2 Config)
+          cat <<EOF > app/build.gradle
+          plugins { id 'com.android.application' }
+          android {
+              namespace 'com.zeeshan.chat'
+              compileSdk 33
+              defaultConfig {
+                  applicationId "com.zeeshan.chat"
+                  minSdk 24
+                  targetSdk 33
+                  versionCode 1
+                  versionName "1.0-Z2"
+              }
+          }
+          EOF
+
+          # 5. Manifest file (App ki entry ke liye)
+          mkdir -p app/src/main/
+          cat <<EOF > app/src/main/AndroidManifest.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <application
+                  android:label="Zeeshan Chat Z+2"
+                  android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+                  <activity android:name=".MainActivity" android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+
+      - name: Generate Gradle Wrapper
+        run: gradle wrapper
+
+      - name: Build Real APK (Assemble Debug)
         run: |
-          # Agar gradlew nahi hai, toh placeholder banao
-          if [ ! -f ./gradlew ]; then
-            echo "Placeholder for Z+2 APK" > app/build/outputs/apk/debug/app-debug.apk
-          else
-            chmod +x ./gradlew
-            ./gradlew assembleDebug
-          fi
+          chmod +x ./gradlew
+          ./gradlew assembleDebug
 
-      - name: Upload Zeeshan chat Z+2
+      - name: Upload Asli Zeeshan chat Z+2
         uses: actions/upload-artifact@v4
         with:
-          name: Zeeshan-chat-Z+2-App
+          name: Zeeshan-chat-Z+2-Real-APK
           path: app/build/outputs/apk/debug/app-debug.apk
+
