@@ -1,0 +1,12 @@
+plugins { id 'com.android.application' }
+android {
+    namespace 'com.zeeshan.chat'
+    compileSdk 33
+    defaultConfig {
+        applicationId "com.zeeshan.chat"
+        minSdk 24
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+    }
+}
