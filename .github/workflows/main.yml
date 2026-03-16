@@ -1,4 +1,4 @@
-name: Zeeshan-chat-Z2-Real-Builder
+name: Zeeshan-chat-Z2-Final-Fix
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
           mkdir -p app/src/main/java/com/zeeshan/chat
           mkdir -p app/src/main/res/layout
           
-          # Root build.gradle
+          # Root build.gradle (Fixing Dependency Error)
           cat <<EOF > build.gradle
           buildscript {
               repositories { google(); mavenCentral() }
@@ -36,9 +36,9 @@ jobs:
           # settings.gradle
           echo "include ':app'" > settings.gradle
 
-          # app/build.gradle
+          # app/build.gradle (Standard Syntax)
           cat <<EOF > app/build.gradle
-          plugins { id 'com.android.application' }
+          apply plugin: 'com.android.application'
           android {
               namespace 'com.zeeshan.chat'
               compileSdk 33
@@ -52,8 +52,7 @@ jobs:
           }
           EOF
 
-          # Manifest Fix
-          mkdir -p app/src/main/
+          # Manifest Setup
           cat <<EOF > app/src/main/AndroidManifest.xml
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
@@ -79,5 +78,5 @@ jobs:
       - name: Upload Asli Zeeshan chat Z+2
         uses: actions/upload-artifact@v4
         with:
-          name: Zeeshan-chat-Z+2-Real-APK
+          name: Zeeshan-chat-Z2-Final-APK
           path: app/build/outputs/apk/debug/app-debug.apk
