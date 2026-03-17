@@ -1,12 +1,29 @@
-plugins { id 'com.android.application' }
+// 1. Sabse upar 'plugins' hamesha chote aksharon mein hona chahiye
+plugins {
+    id 'com.android.application'
+}
+
 android {
     namespace 'com.zeeshan.chat'
     compileSdk 33
+
     defaultConfig {
         applicationId "com.zeeshan.chat"
         minSdk 24
         targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName "1.0-Z2"
     }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+}
+
+// 2. Ye block zaroori hai taaki 24-byte wala khali APK na bane
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
 }
