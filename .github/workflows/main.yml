@@ -1,4 +1,4 @@
-name: Z2-Server-Master-Build
+name: Z2-Super-Fast-Build
 
 on:
   push:
@@ -8,21 +8,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 1. Code Checkout
+      - name: 1. Checkout Code
         uses: actions/checkout@v4
 
-      - name: 2. Java 17 Setup
+      - name: 2. Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: 3. Automatic Project Server Setup
+      - name: 3. Automatic Server Setup (Clean Project)
         run: |
-          # Pehle se maujood kharab files ko saaf karna
+          # Purani kharab files hatana
           rm -rf app build.gradle settings.gradle
 
-          # Folder Structure banana
+          # Sahi folders banana
           mkdir -p app/src/main/java/com/zeeshan/chat
           mkdir -p app/src/main/res/layout
           mkdir -p app/src/main/res/values
@@ -41,11 +41,9 @@ jobs:
           # B. settings.gradle
           echo "include ':app'" > settings.gradle
 
-          # C. app/build.gradle (Sabse zaroori fix yahan hai)
+          # C. app/build.gradle (FIX: Isse Dependency error nahi aayega)
           cat <<EOF > app/build.gradle
-          plugins {
-              id 'com.android.application'
-          }
+          apply plugin: 'com.android.application'
           android {
               namespace 'com.zeeshan.chat'
               compileSdk 33
@@ -57,16 +55,13 @@ jobs:
                   versionName "1.0-Z2"
               }
           }
-          dependencies {
-              implementation 'androidx.appcompat:appcompat:1.6.1'
-          }
           EOF
 
           # D. Manifest File
           cat <<EOF > app/src/main/AndroidManifest.xml
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-              <application android:label="Zeeshan Chat Z+2" android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
+              <application android:label="Zeeshan Chat Z+2">
                   <activity android:name=".MainActivity" android:exported="true">
                       <intent-filter>
                           <action android:name="android.intent.action.MAIN" />
@@ -77,12 +72,12 @@ jobs:
           </manifest>
           EOF
 
-          # E. MainActivity Code
+          # E. MainActivity.java
           cat <<EOF > app/src/main/java/com/zeeshan/chat/MainActivity.java
           package com.zeeshan.chat;
           import android.os.Bundle;
-          import androidx.appcompat.app.AppCompatActivity;
-          public class MainActivity extends AppCompatActivity {
+          import android.app.Activity;
+          public class MainActivity extends Activity {
               @Override
               protected void onCreate(Bundle savedInstanceState) {
                   super.onCreate(savedInstanceState);
@@ -90,12 +85,9 @@ jobs:
           }
           EOF
 
-          # F. Strings Resource
-          echo '<resources><string name="app_name">Zeeshan Chat Z+2</string></resources>' > app/src/main/res/values/strings.xml
-
-      - name: 4. Build APK (Server Mode)
+      - name: 4. Build Real APK
         run: |
-          # Missing wrapper files generate karna
+          # Missing gradlew generate karna
           gradle wrapper --gradle-version 8.1
           chmod +x ./gradlew
           ./gradlew assembleDebug
@@ -103,5 +95,6 @@ jobs:
       - name: 5. Upload Working Z+2 APK
         uses: actions/upload-artifact@v4
         with:
-          name: Zeeshan-Z2-Final-APK
+          name: Zeeshan-Z2-Working-APK
           path: app/build/outputs/apk/debug/app-debug.apk
+
