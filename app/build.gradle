@@ -1,4 +1,3 @@
-// 1. Sabse upar 'plugins' hamesha chote aksharon mein hona chahiye
 plugins {
     id 'com.android.application'
 }
@@ -18,12 +17,13 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
 
-// 2. Ye block zaroori hai taaki 24-byte wala khali APK na bane
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
