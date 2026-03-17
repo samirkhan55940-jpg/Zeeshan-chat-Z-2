@@ -1,4 +1,4 @@
-name: Z2-Final-Super-Build
+name: Z2-Master-Final-Build
 
 on:
   push:
@@ -8,22 +8,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 1. Code Checkout
+      - name: 1. Code Download
         uses: actions/checkout@v4
 
-      - name: 2. Java 17 Setup
+      - name: 2. Java Setup
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: 3. NASA Project Structure (Zero Error Mode)
+      - name: 3. NASA Z2 Structure Setup
         run: |
+          # Sabse pehle purani galat files ko saaf karna
+          rm -rf app build.gradle settings.gradle
+          
+          # Folders banana
           mkdir -p app/src/main/java/com/zeeshan/chat
           mkdir -p app/src/main/res/layout
           mkdir -p app/src/main/res/values
 
-          # Root build.gradle
+          # Root build.gradle (Bilkul simple)
           cat <<EOF > build.gradle
           buildscript {
               repositories { google(); mavenCentral() }
@@ -37,11 +41,9 @@ jobs:
           # settings.gradle
           echo "include ':app'" > settings.gradle
 
-          # app/build.gradle (FIX: No more DependencyHandler error)
+          # app/build.gradle (FIX: Isse Dependency error nahi aayega)
           cat <<EOF > app/build.gradle
-          plugins {
-              id 'com.android.application'
-          }
+          apply plugin: 'com.android.application'
           android {
               namespace 'com.zeeshan.chat'
               compileSdk 33
@@ -50,21 +52,16 @@ jobs:
                   minSdk 24
                   targetSdk 33
                   versionCode 1
-                  versionName "1.0-Z2-Final"
+                  versionName "1.0-Z2"
               }
-          }
-          dependencies {
-              implementation 'androidx.appcompat:appcompat:1.6.1'
           }
           EOF
 
-          # Manifest (NASA Style Fullscreen)
+          # Manifest (App ki pehchan)
           cat <<EOF > app/src/main/AndroidManifest.xml
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-              <application
-                  android:label="Zeeshan Chat Z+2"
-                  android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
+              <application android:label="Zeeshan Chat Z+2">
                   <activity android:name=".MainActivity" android:exported="true">
                       <intent-filter>
                           <action android:name="android.intent.action.MAIN" />
@@ -75,33 +72,28 @@ jobs:
           </manifest>
           EOF
 
-          # Strings Setup
-          echo '<resources><string name="app_name">Zeeshan Chat Z+2</string></resources>' > app/src/main/res/values/strings.xml
-
-          # MainActivity Java (Z+2 Logic Engine)
+          # MainActivity Java (Brain logic)
           cat <<EOF > app/src/main/java/com/zeeshan/chat/MainActivity.java
           package com.zeeshan.chat;
           import android.os.Bundle;
-          import androidx.appcompat.app.AppCompatActivity;
-
-          public class MainActivity extends AppCompatActivity {
+          import android.app.Activity;
+          public class MainActivity extends Activity {
               @Override
               protected void onCreate(Bundle savedInstanceState) {
                   super.onCreate(savedInstanceState);
-                  // Layout hum baad mein aur matrix jaisa banayenge
-                  setContentView(new android.view.View(this)); 
               }
           }
           EOF
 
-      - name: 4. Build Real Binary APK
+      - name: 4. Build Real APK
         run: |
           gradle wrapper --gradle-version 8.1
           chmod +x ./gradlew
           ./gradlew assembleDebug
 
-      - name: 5. Upload Final Z+2 APK
+      - name: 5. Upload Working APK
         uses: actions/upload-artifact@v4
         with:
-          name: Zeeshan-Z2-Real-App
+          name: Zeeshan-Z2-Real-APK
           path: app/build/outputs/apk/debug/app-debug.apk
+
