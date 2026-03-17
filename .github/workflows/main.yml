@@ -1,4 +1,4 @@
-name: Z2-Super-Fast-Build
+name: Zeeshan-Chat-Z2-Final-Build
 
 on:
   push:
@@ -8,92 +8,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 1. Checkout Code
+      - name: 1. Code Checkout
         uses: actions/checkout@v4
 
-      - name: 2. Setup Java 17
+      - name: 2. Java 17 Setup
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: 3. Automatic Server Setup (Clean Project)
+      - name: 3. Fix Permissions & Gradle Wrapper
         run: |
-          # Purani kharab files hatana
-          rm -rf app build.gradle settings.gradle
-
-          # Sahi folders banana
-          mkdir -p app/src/main/java/com/zeeshan/chat
-          mkdir -p app/src/main/res/layout
-          mkdir -p app/src/main/res/values
-
-          # A. Root build.gradle
-          cat <<EOF > build.gradle
-          buildscript {
-              repositories { google(); mavenCentral() }
-              dependencies { classpath 'com.android.tools.build:gradle:8.1.0' }
-          }
-          allprojects {
-              repositories { google(); mavenCentral() }
-          }
-          EOF
-
-          # B. settings.gradle
-          echo "include ':app'" > settings.gradle
-
-          # C. app/build.gradle (FIX: Isse Dependency error nahi aayega)
-          cat <<EOF > app/build.gradle
-          apply plugin: 'com.android.application'
-          android {
-              namespace 'com.zeeshan.chat'
-              compileSdk 33
-              defaultConfig {
-                  applicationId "com.zeeshan.chat"
-                  minSdk 24
-                  targetSdk 33
-                  versionCode 1
-                  versionName "1.0-Z2"
-              }
-          }
-          EOF
-
-          # D. Manifest File
-          cat <<EOF > app/src/main/AndroidManifest.xml
-          <?xml version="1.0" encoding="utf-8"?>
-          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-              <application android:label="Zeeshan Chat Z+2">
-                  <activity android:name=".MainActivity" android:exported="true">
-                      <intent-filter>
-                          <action android:name="android.intent.action.MAIN" />
-                          <category android:name="android.intent.category.LAUNCHER" />
-                      </intent-filter>
-                  </activity>
-              </application>
-          </manifest>
-          EOF
-
-          # E. MainActivity.java
-          cat <<EOF > app/src/main/java/com/zeeshan/chat/MainActivity.java
-          package com.zeeshan.chat;
-          import android.os.Bundle;
-          import android.app.Activity;
-          public class MainActivity extends Activity {
-              @Override
-              protected void onCreate(Bundle savedInstanceState) {
-                  super.onCreate(savedInstanceState);
-              }
-          }
-          EOF
+          if [ ! -f gradlew ]; then
+            gradle wrapper --gradle-version 8.1
+          fi
+          chmod +x gradlew
 
       - name: 4. Build Real APK
-        run: |
-          # Missing gradlew generate karna
-          gradle wrapper --gradle-version 8.1
-          chmod +x ./gradlew
-          ./gradlew assembleDebug
+        # Ye step aapke code ko compile karke asli APK banayega
+        run: ./gradlew assembleDebug
 
       - name: 5. Upload Working Z+2 APK
+        # Naya v4 version use kiya hai taaki purana error na aaye
         uses: actions/upload-artifact@v4
         with:
-          name: Zeeshan-Z2-Working-APK
-
+          name: Zeeshan-Chat-Z2-App
+          path: app/build/outputs/apk/debug/app-debug.apk
